@@ -1,0 +1,7 @@
+SHISH
+SPIKE
+SPIKE
+
+while(true){
+System.out.println("SPIKE");
+}
