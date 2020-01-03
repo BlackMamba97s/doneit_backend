@@ -6,7 +6,13 @@ public class ResponseMessage {
 
     private String message;
     private Integer messageCode;
+    private String token;
 
+    public ResponseMessage(String message, Integer messageCode, String token) {
+        this.message = message;
+        this.messageCode = messageCode;
+        this.token = token;
+    }
 
     public ResponseMessage() {
     }
@@ -18,6 +24,14 @@ public class ResponseMessage {
     public ResponseMessage(String message, Integer messageCode) {
         this.message = message;
         this.messageCode = messageCode;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public Integer getMessageCode() {
