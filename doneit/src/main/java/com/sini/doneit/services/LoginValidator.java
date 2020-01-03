@@ -12,10 +12,10 @@ public class LoginValidator {
     }
 
     private boolean validateUsername(String username){
-        return username.length() > 4 && username.length() < 16;
+        return username.length() > 2;
     }
 
     private boolean validatePassword(String password){
-        return password.length() > 8 && password.length() < 30;
+        return password.length() > 2;
     }
 }
