@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 public class JwtAuthenticationRestController {
 
     @Value("${jwt.http.request.header}")
@@ -42,11 +42,8 @@ public class JwtAuthenticationRestController {
 
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
         System.out.println("Password: " + authenticationRequest.getPassword());
-
         final UserDetails userDetails = jwtInMemoryUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-
         final String token = jwtTokenUtil.generateToken(userDetails);
-
         return ResponseEntity.ok(new ResponseMessage("Login effettuato con successo", MessageCode.SUCCESSFUL_LOGIN, token));
     }
 
@@ -65,7 +62,7 @@ public class JwtAuthenticationRestController {
         }
     }
 
-    @ExceptionHandler({ AuthenticationException.class })
+    @ExceptionHandler({AuthenticationException.class})
     public ResponseEntity<ResponseMessage> handleAuthenticationException(AuthenticationException e) {
         return new ResponseEntity<>(new ResponseMessage(e.getMessage(), MessageCode.TOKEN_EXCEPTION), HttpStatus.UNAUTHORIZED);
     }
