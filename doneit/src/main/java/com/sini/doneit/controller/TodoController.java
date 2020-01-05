@@ -67,5 +67,5 @@ public class TodoController {
         return new ResponseEntity<>(new ResponseMessage("Errore nell'eliminazione del todo", ERROR_TODO_REMOVAL),
                 HttpStatus.UNAUTHORIZED);
     }
-    
+
 }
