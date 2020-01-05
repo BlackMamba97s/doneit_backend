@@ -48,7 +48,6 @@ public class JwtTokenUtil implements Serializable {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        System.out.println("SECRET: " + secret);
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
@@ -103,5 +102,10 @@ public class JwtTokenUtil implements Serializable {
     public String getTokenFromHeader(HttpHeaders headers){
         String token = headers.get("authorization").get(0);
         return token.substring(7);
+    }
+
+    public String getUsernameFromHeader(HttpHeaders httpHeaders){
+        String token = getTokenFromHeader(httpHeaders);
+        return getUsernameFromToken(token);
     }
 }

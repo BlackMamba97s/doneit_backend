@@ -1,21 +1,29 @@
 package com.sini.doneit.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 public class Todo {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
     private String title;
     private String description;
     private Date publishedDate;
 
-    public Todo(){}
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "users")
+    @JsonIgnore
+    private User user;
+
+    public Todo() {
+    }
 
     public Long getId() {
         return id;
@@ -49,6 +57,14 @@ public class Todo {
         this.publishedDate = publishedDate;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Todo{" +
@@ -57,5 +73,18 @@ public class Todo {
                 ", description='" + description + '\'' +
                 ", publishedDate=" + publishedDate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Todo)) return false;
+        Todo todo = (Todo) o;
+        return getId().equals(todo.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return 31;
     }
 }
