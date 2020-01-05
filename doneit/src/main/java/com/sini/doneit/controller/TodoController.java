@@ -34,6 +34,26 @@ public class TodoController {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
+
+    @GetMapping("/get-todo-list")
+    public List<Todo> getUserTodoList(@RequestHeader HttpHeaders headers) {
+        String username = jwtTokenUtil.getUsernameFromToken((jwtTokenUtil.getTokenFromHeader(headers)));
+        List<Todo> todoList = userJpaRepository.findByUsername(username).getTodoList();
+        return todoList;
+    }
+
+    @GetMapping("/get-todo/{todoId}")
+    public Todo getTodoById(@RequestHeader HttpHeaders headers, @PathVariable Long todoId){
+        User user = userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(headers));
+        Optional<Todo> todo = todoJpaRepository.findById(todoId);
+        if(todo.isPresent()){
+            if(user.isOwnerOfTodo(todo.get())){
+                return todo.get();
+            }
+        }
+        return null;
+    }
+
     @PostMapping("/create-todo")
     public ResponseEntity<ResponseMessage> createTodo(@RequestBody Todo todo, @RequestHeader HttpHeaders headers) {
         String token = jwtTokenUtil.getTokenFromHeader(headers);
@@ -45,12 +65,6 @@ public class TodoController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/get-todo-list")
-    public List<Todo> getUserTodoList(@RequestHeader HttpHeaders headers) {
-        String username = jwtTokenUtil.getUsernameFromToken((jwtTokenUtil.getTokenFromHeader(headers)));
-        List<Todo> todoList = userJpaRepository.findByUsername(username).getTodoList();
-        return todoList;
-    }
 
     @DeleteMapping("/delete-todo/{todoId}")
     public ResponseEntity<ResponseMessage> deleteTodo(@RequestHeader HttpHeaders headers, @PathVariable Long todoId) {
@@ -66,6 +80,25 @@ public class TodoController {
         }
         return new ResponseEntity<>(new ResponseMessage("Errore nell'eliminazione del todo", ERROR_TODO_REMOVAL),
                 HttpStatus.UNAUTHORIZED);
+    }
+
+    @PutMapping("/update-todo")
+    public ResponseEntity<ResponseMessage> updateTodo(@RequestBody Todo todo, @RequestHeader HttpHeaders headers){
+        User user = userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(headers));
+        Optional<Todo> todoDb = todoJpaRepository.findById(todo.getId());
+        if(todoDb.isPresent()){
+            if(user.isOwnerOfTodo(todoDb.get())){
+                user.removeTodo(todo);
+                user.addTodo(todo);
+                todoJpaRepository.save(todo);
+
+                return new ResponseEntity<>(new ResponseMessage("Todo modificato con successo", SUCCESS_TODO_MODIFIED),
+                        HttpStatus.OK);
+            }
+        }
+
+        return new ResponseEntity<>(new ResponseMessage("Errore nella modifica del todo", FAILED_TODO_MODIFY),
+                HttpStatus.OK);
     }
 
 }
