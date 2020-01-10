@@ -1,5 +1,6 @@
 package com.sini.doneit.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -17,9 +18,8 @@ public class Todo {
     private String description;
     private Date publishedDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "users")
-    @JsonIgnore
     private User user;
 
     public Todo() {
@@ -72,6 +72,7 @@ public class Todo {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", publishedDate=" + publishedDate +
+                ", user=" + user+
                 '}';
     }
 

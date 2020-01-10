@@ -8,7 +8,9 @@ import com.sini.doneit.model.User;
 import com.sini.doneit.repository.TodoJpaRepository;
 import com.sini.doneit.repository.UserJpaRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +37,7 @@ public class TodoController {
     private UserJpaRepository userJpaRepository;
 
 
-    @GetMapping("/get-todo-list")
+    @GetMapping("/my-todo-list")
     public List<Todo> getUserTodoList(@RequestHeader HttpHeaders headers) {
         String username = jwtTokenUtil.getUsernameFromToken((jwtTokenUtil.getTokenFromHeader(headers)));
         List<Todo> todoList = userJpaRepository.findByUsername(username).getTodoList();
@@ -48,6 +50,7 @@ public class TodoController {
         Optional<Todo> todo = todoJpaRepository.findById(todoId);
         if(todo.isPresent()){
             if(user.isOwnerOfTodo(todo.get())){
+                System.out.println(todo.get());
                 return todo.get();
             }
         }
@@ -60,11 +63,17 @@ public class TodoController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user = userJpaRepository.findByUsername(username);
         todo.setUser(user);
+        todo.setPublishedDate(new Date());
+
         todoJpaRepository.save(todo);
         return new ResponseEntity<>(new ResponseMessage("Todo creato correttamente", TODO_CREATED),
                 HttpStatus.OK);
     }
 
+    @GetMapping(path = "/all-todo-list")
+    public List<Todo> getAllTodo(){
+       return todoJpaRepository.findAll();
+    }
 
     @DeleteMapping("/delete-todo/{todoId}")
     public ResponseEntity<ResponseMessage> deleteTodo(@RequestHeader HttpHeaders headers, @PathVariable Long todoId) {
