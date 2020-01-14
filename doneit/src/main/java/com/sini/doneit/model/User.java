@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.HashSet;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,11 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Todo> todoList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Proposal> proposals;
+
 
 
     public User() {
@@ -82,5 +88,13 @@ public class User {
 
     public boolean isOwnerOfTodo(Todo t){
         return todoList.contains(t);
+    }
+
+    public List<Proposal> getProposals() {
+        return proposals;
+    }
+
+    public void setProposals(List<Proposal> proposals) {
+        this.proposals = proposals;
     }
 }

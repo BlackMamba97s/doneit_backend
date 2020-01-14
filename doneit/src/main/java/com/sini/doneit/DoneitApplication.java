@@ -28,7 +28,7 @@ public class DoneitApplication {
 
         @Override
         public void run(String... args) throws Exception {
-            if(categoryJpaRepository.findAll().size() == 0) {
+            if (categoryJpaRepository.findAll().size() == 0) {
                 categoryJpaRepository.save(new Category("Ripetizioni", 9));
                 categoryJpaRepository.save(new Category("Riparazione PC", 3));
                 categoryJpaRepository.save(new Category("Faccende domestiche", 3));

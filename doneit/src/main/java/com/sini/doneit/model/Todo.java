@@ -1,7 +1,10 @@
 package com.sini.doneit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -23,6 +26,11 @@ public class Todo {
     @ManyToOne
     @JoinColumn(name = "category")
     private Category category;  //nuovo
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "todo")
+    private List<Proposal> proposals;
+
 
 
     public Todo() {
@@ -108,5 +116,13 @@ public class Todo {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public List<Proposal> getProposals() {
+        return proposals;
+    }
+
+    public void setProposals(List<Proposal> proposals) {
+        this.proposals = proposals;
     }
 }
