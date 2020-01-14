@@ -63,11 +63,11 @@ public class TodoController {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user = userJpaRepository.findByUsername(username);
         todo.setUser(user);
-        todo.setPublishedDate(new Date());
 
         todoJpaRepository.save(todo);
         return new ResponseEntity<>(new ResponseMessage("Todo creato correttamente", TODO_CREATED),
                 HttpStatus.OK);
+
     }
 
     @GetMapping(path = "/all-todo-list")

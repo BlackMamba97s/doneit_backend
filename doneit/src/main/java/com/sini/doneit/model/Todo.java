@@ -2,6 +2,9 @@ package com.sini.doneit.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.bytebuddy.implementation.bind.annotation.Default;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,13 +19,47 @@ public class Todo {
     private Long id;
     private String title;
     private String description;
-    private Date publishedDate;
+    private Date publishedDate = new Date();
+    private Date expirationDate;   //nuovo
+    private boolean expired = false;    //nuovo
 
     @ManyToOne
     @JoinColumn(name = "users")
     private User user;
 
+    @OneToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private Category category;  //nuovo
+
+
     public Todo() {
+    }
+
+    @Override
+    public String toString() {
+        return "Todo{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", publishedDate=" + publishedDate +
+                ", expirationDate=" + expirationDate +
+                ", expired=" + expired +
+                ", user=" + user +
+                ", category=" + category +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Todo)) return false;
+        Todo todo = (Todo) o;
+        return getId().equals(todo.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return 31;
     }
 
     public Long getId() {
@@ -65,27 +102,28 @@ public class Todo {
         this.user = user;
     }
 
-    @Override
-    public String toString() {
-        return "Todo{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", publishedDate=" + publishedDate +
-                ", user=" + user+
-                '}';
+
+    public boolean isExpired() {
+        return expired;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Todo)) return false;
-        Todo todo = (Todo) o;
-        return getId().equals(todo.getId());
+    public void setExpired(boolean expired) {
+        this.expired = expired;
     }
 
-    @Override
-    public int hashCode() {
-        return 31;
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
