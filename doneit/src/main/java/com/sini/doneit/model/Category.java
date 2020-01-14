@@ -1,21 +1,29 @@
 package com.sini.doneit.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
     private Integer cfuPrice;
 
-    @OneToOne(mappedBy = "category")
-    private Todo todo;
+    @JsonIgnore
+    @OneToMany(mappedBy = "category")
+    private List<Todo> todoList;
 
     public Category() {
+    }
+
+    public Category(String name, Integer cfuPrice){
+        this.name = name;
+        this.cfuPrice = cfuPrice;
     }
 
     public Long getId() {
@@ -40,6 +48,16 @@ public class Category {
 
     public void setCfuPrice(Integer cfuPrice) {
         this.cfuPrice = cfuPrice;
+    }
+
+    public void addTodo(Todo todo){
+        this.todoList.add(todo);
+        todo.setCategory(this);
+    }
+
+    public void removeTodo(Todo todo){
+        this.todoList.remove(todo);
+        todo.setCategory(null);
     }
 
 }

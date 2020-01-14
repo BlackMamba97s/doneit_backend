@@ -57,23 +57,29 @@ public class TodoController {
         return null;
     }
 
+    @GetMapping(path = "/all-todo-list")
+    public List<Todo> getAllTodo(){
+        return todoJpaRepository.findAll();
+    }
+
+    @GetMapping(path = "/active-todo-list")
+    public List<Todo> getActiveTodo(){
+        return todoJpaRepository.findAllActiveTodo(new Date());
+    }
+
     @PostMapping("/create-todo")
     public ResponseEntity<ResponseMessage> createTodo(@RequestBody Todo todo, @RequestHeader HttpHeaders headers) {
         String token = jwtTokenUtil.getTokenFromHeader(headers);
         String username = jwtTokenUtil.getUsernameFromToken(token);
         User user = userJpaRepository.findByUsername(username);
         todo.setUser(user);
-
         todoJpaRepository.save(todo);
+
         return new ResponseEntity<>(new ResponseMessage("Todo creato correttamente", TODO_CREATED),
                 HttpStatus.OK);
 
     }
 
-    @GetMapping(path = "/all-todo-list")
-    public List<Todo> getAllTodo(){
-       return todoJpaRepository.findAll();
-    }
 
     @DeleteMapping("/delete-todo/{todoId}")
     public ResponseEntity<ResponseMessage> deleteTodo(@RequestHeader HttpHeaders headers, @PathVariable Long todoId) {

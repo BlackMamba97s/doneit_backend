@@ -1,14 +1,8 @@
 package com.sini.doneit.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.bytebuddy.implementation.bind.annotation.Default;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
+
 
 @Entity
 public class Todo {
@@ -21,14 +15,13 @@ public class Todo {
     private String description;
     private Date publishedDate = new Date();
     private Date expirationDate;   //nuovo
-    private boolean expired = false;    //nuovo
 
     @ManyToOne
     @JoinColumn(name = "users")
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "category")
     private Category category;  //nuovo
 
 
@@ -43,7 +36,6 @@ public class Todo {
                 ", description='" + description + '\'' +
                 ", publishedDate=" + publishedDate +
                 ", expirationDate=" + expirationDate +
-                ", expired=" + expired +
                 ", user=" + user +
                 ", category=" + category +
                 '}';
@@ -100,15 +92,6 @@ public class Todo {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-
-    public boolean isExpired() {
-        return expired;
-    }
-
-    public void setExpired(boolean expired) {
-        this.expired = expired;
     }
 
     public Date getExpirationDate() {
