@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "todo_id"}))
+
 public class Proposal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

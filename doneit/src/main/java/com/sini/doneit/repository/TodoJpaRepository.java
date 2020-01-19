@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface TodoJpaRepository extends JpaRepository<Todo, Long> {
 
-    @Query("select t from Todo t where t.expirationDate >= :currentDate")
+    @Query("select t from Todo t where t.expirationDate >= :currentDate or t.expirationDate is null")
     List<Todo> findAllActiveTodo(@Param("currentDate") Date currentDate);
 
 
