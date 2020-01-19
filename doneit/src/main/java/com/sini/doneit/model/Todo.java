@@ -27,11 +27,9 @@ public class Todo {
     @JoinColumn(name = "category")
     private Category category;  //nuovo
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "todo")
     private List<Proposal> proposals;
-
-
 
     public Todo() {
     }
