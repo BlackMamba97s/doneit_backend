@@ -23,6 +23,11 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    private String name;
+    private String surname;
+    @Column(unique = true)
+    private String email;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Todo> todoList;
@@ -31,6 +36,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Proposal> proposals;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private PersonalCard personalCard;
 
 
     public User() {
@@ -70,6 +77,14 @@ public class User {
         this.id = id;
     }
 
+    public PersonalCard getPersonalCard() {
+        return personalCard;
+    }
+
+    public void setPersonalCard(PersonalCard personalCard) {
+        this.personalCard = personalCard;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -96,5 +111,29 @@ public class User {
 
     public void setProposals(List<Proposal> proposals) {
         this.proposals = proposals;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
