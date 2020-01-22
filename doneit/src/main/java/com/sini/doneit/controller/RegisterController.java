@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -59,22 +60,19 @@ public class RegisterController {
         user.setPassword(bCryptPasswordEncoder.encode(password));
     }
 
-    @GetMapping("/verify-first-login")
-    public Boolean checkIfFirstLogin(@RequestHeader HttpHeaders httpHeaders){
-        String username = jwtTokenUtil.getUsernameFromHeader(httpHeaders);
-        User user = userJpaRepository.findByUsername(username);
-        Optional<PersonalCard> personalCardOptional = personalCardJpaRepository.findById(user.getId());
-        PersonalCard personalCard = null;
-        if(personalCardOptional.isPresent()){
-            personalCard = personalCardOptional.get();
-            System.out.println(personalCard);
-            return !personalCard.getDone();
-        }
-        return false;
+
+    @PostMapping("/complete-register")
+    public ResponseEntity<ResponseMessage> completeRegister(@RequestHeader HttpHeaders httpHeaders,
+                                                            @RequestBody PersonalCard personalCard){
+        System.out.println(personalCard);
+        return null;
+
     }
 
     private boolean userAlreadyExists(User user){
         return userJpaRepository.findByUsername(user.getUsername()) != null ||
                 userJpaRepository.findByEmail(user.getEmail()) != null;
     }
+
+
 }

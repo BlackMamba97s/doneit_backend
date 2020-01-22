@@ -1,6 +1,7 @@
 package com.sini.doneit.model;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -16,6 +17,8 @@ public class PersonalCard {
     private String telephone;
     private String statusDescription;
     private Boolean done = false;
+    @Type(type = "text")
+    private String base64StringImage;
 
     @OneToOne
     @JoinColumn(name = "users")
@@ -82,6 +85,14 @@ public class PersonalCard {
         return this;
     }
 
+    public String getBase64StringImage() {
+        return base64StringImage;
+    }
+
+    public void setBase64StringImage(String base64StringImage) {
+        this.base64StringImage = base64StringImage;
+    }
+
     @Override
     public String toString() {
         return "PersonalCard{" +
@@ -91,6 +102,6 @@ public class PersonalCard {
                 ", statusDescription='" + statusDescription + '\'' +
                 ", done=" + done +
                 ", user=" + user +
-                '}';
+                ", base64String=" + base64StringImage + "}";
     }
 }
