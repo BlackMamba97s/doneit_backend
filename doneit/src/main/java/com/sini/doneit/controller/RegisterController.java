@@ -39,7 +39,7 @@ public class RegisterController {
     public ResponseEntity<ResponseMessage> registerUser(@RequestBody User user) {
         ResponseMessage responseMessage = null;
         if (registerValidator.validateRegister(user)) {
-            if(userAlreadyExists(user)){
+            if (userAlreadyExists(user)) {
                 responseMessage = new ResponseMessage("Username e/o mail già esistenti!", USER_ALREADY_CREATED);
                 return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
             }
@@ -54,7 +54,7 @@ public class RegisterController {
         return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
     }
 
-    private void encryptPassword(User user){
+    private void encryptPassword(User user) {
         String password = user.getPassword();
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         user.setPassword(bCryptPasswordEncoder.encode(password));
@@ -63,13 +63,28 @@ public class RegisterController {
 
     @PostMapping("/complete-register")
     public ResponseEntity<ResponseMessage> completeRegister(@RequestHeader HttpHeaders httpHeaders,
-                                                            @RequestBody PersonalCard personalCard){
-        System.out.println(personalCard);
-        return null;
+                                                            @RequestBody PersonalCard personalCard) {
+        User user = userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(httpHeaders));
+        if (user != null) {
+
+            PersonalCard p = personalCardJpaRepository.findByUserId(user.getId());
+            p.setDone(true)
+                    .setUniversity(personalCard.getUniversity())
+                    .setFaculty(personalCard.getFaculty())
+                    .setBase64StringImage(personalCard.getBase64StringImage())
+                    .setStatusDescription(personalCard.getStatusDescription())
+                    .setTelephone(personalCard.getTelephone());
+
+            personalCardJpaRepository.save(p);
+            return new ResponseEntity<>(new ResponseMessage("Registrazione completata",
+                    SUCCESSFUL_REGISTER), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponseMessage("Errore nella registrazione",
+                INVALID_DATA), HttpStatus.BAD_REQUEST);
 
     }
 
-    private boolean userAlreadyExists(User user){
+    private boolean userAlreadyExists(User user) {
         return userJpaRepository.findByUsername(user.getUsername()) != null ||
                 userJpaRepository.findByEmail(user.getEmail()) != null;
     }

@@ -6,7 +6,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "personal_card")
+@Table(name = "personal_card", uniqueConstraints = @UniqueConstraint(columnNames = {"users"}))
 public class PersonalCard {
 
     @Id
@@ -40,40 +40,45 @@ public class PersonalCard {
         return university;
     }
 
-    public void setUniversity(String university) {
+    public PersonalCard setUniversity(String university) {
         this.university = university;
+        return this;
     }
 
     public String getFaculty() {
         return faculty;
     }
 
-    public void setFaculty(String faculty) {
+    public PersonalCard setFaculty(String faculty) {
         this.faculty = faculty;
+        return this;
     }
 
     public String getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(String telephone) {
+    public PersonalCard setTelephone(String telephone) {
         this.telephone = telephone;
+        return this;
     }
 
     public String getStatusDescription() {
         return statusDescription;
     }
 
-    public void setStatusDescription(String statusDescription) {
+    public PersonalCard setStatusDescription(String statusDescription) {
         this.statusDescription = statusDescription;
+        return this;
     }
 
     public Boolean getDone() {
         return done;
     }
 
-    public void setDone(Boolean done) {
+    public PersonalCard setDone(Boolean done) {
         this.done = done;
+        return this;
     }
 
     public User getUser() {
@@ -89,8 +94,9 @@ public class PersonalCard {
         return base64StringImage;
     }
 
-    public void setBase64StringImage(String base64StringImage) {
+    public PersonalCard setBase64StringImage(String base64StringImage) {
         this.base64StringImage = base64StringImage;
+        return this;
     }
 
     @Override
