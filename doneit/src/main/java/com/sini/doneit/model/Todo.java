@@ -18,6 +18,7 @@ public class Todo {
     private String description;
     private Date publishedDate = new Date();
     private Date expirationDate;   //nuovo
+    private String state = "published";
 
     @ManyToOne
     @JoinColumn(name = "users")
@@ -42,8 +43,10 @@ public class Todo {
                 ", description='" + description + '\'' +
                 ", publishedDate=" + publishedDate +
                 ", expirationDate=" + expirationDate +
+                ", state='" + state + '\'' +
                 ", user=" + user +
                 ", category=" + category +
+                ", proposals=" + proposals +
                 '}';
     }
 
@@ -122,5 +125,13 @@ public class Todo {
 
     public void setProposals(List<Proposal> proposals) {
         this.proposals = proposals;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

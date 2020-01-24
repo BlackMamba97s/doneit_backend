@@ -38,10 +38,17 @@ public class TodoController {
 
 
     @GetMapping("/my-todo-list")
-    public List<Todo> getUserTodoList(@RequestHeader HttpHeaders headers) {
+    public List<Todo> getUserTodoList(@RequestHeader HttpHeaders headers){
         String username = jwtTokenUtil.getUsernameFromToken((jwtTokenUtil.getTokenFromHeader(headers)));
         List<Todo> todoList = userJpaRepository.findByUsername(username).getTodoList();
         return todoList;
+    }
+
+    @GetMapping("my-todo-list/{state}")
+    public List<Todo> getUserTodoListByState(@RequestHeader HttpHeaders headers, @PathVariable String state){
+        String username = jwtTokenUtil.getUsernameFromToken((jwtTokenUtil.getTokenFromHeader(headers)));
+        User user = userJpaRepository.findByUsername(username);
+        return this.todoJpaRepository.findByUserAndState(user,state);
     }
 
     @GetMapping("/get-todo/{todoId}")

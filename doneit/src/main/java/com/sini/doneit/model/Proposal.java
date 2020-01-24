@@ -3,6 +3,7 @@ package com.sini.doneit.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "todo_id"}))
@@ -21,9 +22,13 @@ public class Proposal {
     @JoinColumn(name = "todo_id")
     private Todo todo;
 
-    private String state = "in corso";
+    private String state = "in progress";
 
     public Proposal() {
+    }
+
+    public Proposal(Long id){
+        this.id = id;
     }
 
     public Proposal(User user, Todo todo){
@@ -63,5 +68,24 @@ public class Proposal {
         this.state = state;
     }
 
+    @Override
+    public String toString() {
+        return "Proposal{" +
+                "id=" + id +
+                ", state='" + state + '\'' +
+                '}';
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Proposal)) return false;
+        Proposal proposal = (Proposal) o;
+        return getId().equals(proposal.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }
