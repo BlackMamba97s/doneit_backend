@@ -13,4 +13,7 @@ public class MessageCode {
     public static final int ERROR_TODO_REMOVAL = 8;
     public static final int SUCCESS_TODO_MODIFIED = 9;
     public static final int FAILED_TODO_MODIFY = 10;
+    public static final int USER_ALREADY_CREATED = 11;
+    public static final int SUCCESSFUL_REQUEST = 12;
+    public static final int FIRST_LOGIN = 13;
 }

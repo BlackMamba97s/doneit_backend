@@ -1,7 +1,9 @@
 package com.sini.doneit;
 
 import com.sini.doneit.model.Category;
+import com.sini.doneit.model.User;
 import com.sini.doneit.repository.CategoryJpaRepository;
+import com.sini.doneit.services.RegisterValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

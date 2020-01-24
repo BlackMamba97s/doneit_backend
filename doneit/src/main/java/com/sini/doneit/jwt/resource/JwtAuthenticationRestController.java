@@ -4,6 +4,8 @@ import com.sini.doneit.jwt.JwtTokenUtil;
 import com.sini.doneit.jwt.JwtUserDetails;
 import com.sini.doneit.model.MessageCode;
 import com.sini.doneit.model.ResponseMessage;
+import com.sini.doneit.model.User;
+import com.sini.doneit.repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,9 @@ public class JwtAuthenticationRestController {
     @Autowired
     private UserDetailsService jwtInMemoryUserDetailsService;
 
+    @Autowired
+    private UserJpaRepository userJpaRepository;
+
 
     @RequestMapping(value = "${jwt.get.token.uri}", method = RequestMethod.POST)
     public ResponseEntity<ResponseMessage> createAuthenticationToken(@RequestBody JwtTokenRequest authenticationRequest)
@@ -44,6 +49,10 @@ public class JwtAuthenticationRestController {
         System.out.println("Password: " + authenticationRequest.getPassword());
         final UserDetails userDetails = jwtInMemoryUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
+        if(checkIfFirstLogin(authenticationRequest.getUsername())){
+            return ResponseEntity.ok(new ResponseMessage("Login effettuato con successo per la prima volta"
+                    , MessageCode.FIRST_LOGIN, token));
+        }
         return ResponseEntity.ok(new ResponseMessage("Login effettuato con successo", MessageCode.SUCCESSFUL_LOGIN, token));
     }
 
@@ -78,5 +87,11 @@ public class JwtAuthenticationRestController {
         } catch (BadCredentialsException e) {
             throw new AuthenticationException("INVALID_CREDENTIALS", e);
         }
+    }
+
+    private boolean checkIfFirstLogin(String username){
+
+        User user = userJpaRepository.findByUsername(username);
+        return !user.getPersonalCard().getDone();
     }
 }
