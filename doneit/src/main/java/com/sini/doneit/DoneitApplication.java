@@ -3,6 +3,7 @@ package com.sini.doneit;
 import com.sini.doneit.model.Category;
 import com.sini.doneit.model.User;
 import com.sini.doneit.repository.CategoryJpaRepository;
+import com.sini.doneit.repository.UserJpaRepository;
 import com.sini.doneit.services.RegisterValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -27,6 +28,9 @@ public class DoneitApplication {
 
         @Autowired
         private CategoryJpaRepository categoryJpaRepository;
+
+        @Autowired
+        private UserJpaRepository userJpaRepository;
 
         @Override
         public void run(String... args) throws Exception {

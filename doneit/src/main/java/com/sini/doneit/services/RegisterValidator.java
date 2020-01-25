@@ -11,7 +11,7 @@ public class RegisterValidator {
 
 
     public boolean validateUsername(String username) {
-        Pattern ptr = Pattern.compile("^[a-z0-9_-]{3,}$");
+        Pattern ptr = Pattern.compile("[a-zA-Z0-9_.-]{3,}");
         return ptr.matcher(username).matches();
     }
 

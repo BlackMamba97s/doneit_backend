@@ -37,6 +37,7 @@ public class User {
     private List<Proposal> proposals;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private PersonalCard personalCard;
 
 
