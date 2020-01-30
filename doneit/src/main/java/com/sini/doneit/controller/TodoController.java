@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+
 import static com.sini.doneit.model.MessageCode.*;
 
 @RestController
@@ -38,25 +40,25 @@ public class TodoController {
 
 
     @GetMapping("/my-todo-list")
-    public List<Todo> getUserTodoList(@RequestHeader HttpHeaders headers){
+    public List<Todo> getUserTodoList(@RequestHeader HttpHeaders headers) {
         String username = jwtTokenUtil.getUsernameFromToken((jwtTokenUtil.getTokenFromHeader(headers)));
         List<Todo> todoList = userJpaRepository.findByUsername(username).getTodoList();
         return todoList;
     }
 
     @GetMapping("my-todo-list/{state}")
-    public List<Todo> getUserTodoListByState(@RequestHeader HttpHeaders headers, @PathVariable String state){
+    public List<Todo> getUserTodoListByState(@RequestHeader HttpHeaders headers, @PathVariable String state) {
         String username = jwtTokenUtil.getUsernameFromToken((jwtTokenUtil.getTokenFromHeader(headers)));
         User user = userJpaRepository.findByUsername(username);
-        return this.todoJpaRepository.findByUserAndState(user,state);
+        return this.todoJpaRepository.findByUserAndState(user, state);
     }
 
     @GetMapping("/get-todo/{todoId}")
-    public Todo getTodoById(@RequestHeader HttpHeaders headers, @PathVariable Long todoId){
+    public Todo getTodoById(@RequestHeader HttpHeaders headers, @PathVariable Long todoId) {
         User user = userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(headers));
         Optional<Todo> todo = todoJpaRepository.findById(todoId);
-        if(todo.isPresent()){
-            if(user.isOwnerOfTodo(todo.get())){
+        if (todo.isPresent()) {
+            if (user.isOwnerOfTodo(todo.get())) {
                 System.out.println(todo.get());
                 return todo.get();
             }
@@ -65,13 +67,14 @@ public class TodoController {
     }
 
     @GetMapping(path = "/all-todo-list")
-    public List<Todo> getAllTodo(){
+    public List<Todo> getAllTodo() {
         return todoJpaRepository.findAll();
     }
 
     @GetMapping(path = "/active-todo-list")
-    public List<Todo> getActiveTodo(){
-        return todoJpaRepository.findAllActiveTodo(new Date());
+    public List<Todo> getActiveTodo() {
+        List<Todo> todoList = todoJpaRepository.findAllActiveTodo(new Date());
+        return todoList;
     }
 
     @PostMapping("/create-todo")
@@ -104,11 +107,11 @@ public class TodoController {
     }
 
     @PutMapping("/update-todo")
-    public ResponseEntity<ResponseMessage> updateTodo(@RequestBody Todo todo, @RequestHeader HttpHeaders headers){
+    public ResponseEntity<ResponseMessage> updateTodo(@RequestBody Todo todo, @RequestHeader HttpHeaders headers) {
         User user = userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(headers));
         Optional<Todo> todoDb = todoJpaRepository.findById(todo.getId());
-        if(todoDb.isPresent()){
-            if(user.isOwnerOfTodo(todoDb.get())){
+        if (todoDb.isPresent()) {
+            if (user.isOwnerOfTodo(todoDb.get())) {
                 user.removeTodo(todo);
                 user.addTodo(todo);
                 todoJpaRepository.save(todo);

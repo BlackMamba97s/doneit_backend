@@ -20,7 +20,7 @@ public class Todo {
     private Date expirationDate;   //nuovo
     private String state = "published";
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "users")
     private User user;
 
@@ -29,7 +29,7 @@ public class Todo {
     private Category category;  //nuovo
 
 
-    @OneToMany(mappedBy = "todo")
+    @OneToMany(mappedBy = "todo", fetch = FetchType.EAGER)
     private List<Proposal> proposals;
 
     public Todo() {

@@ -35,7 +35,6 @@ public class ProposalController {
     private JwtTokenUtil jwtTokenUtil;
 
 
-
     @GetMapping(path = "/all-proposal")
     public List<Proposal> getAllProposals() {
         return proposalJpaRepository.findAll();
@@ -56,15 +55,15 @@ public class ProposalController {
     }
 
     @PostMapping(path = "accept-proposal/{proposalId}")
-    public ResponseEntity<ResponseMessage>  acceptProposal(@RequestBody Todo todo, @PathVariable Long proposalId){
+    public ResponseEntity<ResponseMessage> acceptProposal(@RequestBody Todo todo, @PathVariable Long proposalId) {
         todo.setState("accepted");
         todoJpaRepository.save(todo);
         Proposal proposal = proposalJpaRepository.findById(proposalId).get();
         proposal.setState("accepted");
         proposalJpaRepository.save(proposal);
         todo.getProposals().remove(proposal);
-        for( Proposal propos : todo.getProposals()){
-            if(!propos.getState().equals("refused")) {
+        for (Proposal propos : todo.getProposals()) {
+            if (!propos.getState().equals("refused")) {
                 Proposal newProp = proposalJpaRepository.findById(propos.getId()).get();
                 newProp.setState("refused");
                 proposalJpaRepository.save(newProp);
@@ -76,7 +75,7 @@ public class ProposalController {
     }
 
     @PutMapping(path = "refuse-proposal/{proposalId}")
-    public ResponseEntity<ResponseMessage> refuseProposal(@PathVariable Long proposalId){
+    public ResponseEntity<ResponseMessage> refuseProposal(@PathVariable Long proposalId) {
         Proposal proposal = proposalJpaRepository.findById(proposalId).get();
         proposal.setState("refused");
         proposalJpaRepository.save(proposal);
@@ -84,9 +83,6 @@ public class ProposalController {
         return new ResponseEntity<>(new ResponseMessage("proposta rifiutata", TODO_CREATED),
                 HttpStatus.OK);
     }
-
-
-
 
 
 }

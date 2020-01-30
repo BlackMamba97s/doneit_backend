@@ -3,8 +3,10 @@ package com.sini.doneit.jwt.resource;
 import com.sini.doneit.jwt.JwtTokenUtil;
 import com.sini.doneit.jwt.JwtUserDetails;
 import com.sini.doneit.model.MessageCode;
+import com.sini.doneit.model.PersonalCard;
 import com.sini.doneit.model.ResponseMessage;
 import com.sini.doneit.model.User;
+import com.sini.doneit.repository.PersonalCardJpaRepository;
 import com.sini.doneit.repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +41,9 @@ public class JwtAuthenticationRestController {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
+
+    @Autowired
+    private PersonalCardJpaRepository personalCardJpaRepository;
 
 
     @RequestMapping(value = "${jwt.get.token.uri}", method = RequestMethod.POST)
@@ -92,6 +97,6 @@ public class JwtAuthenticationRestController {
     private boolean checkIfFirstLogin(String username){
 
         User user = userJpaRepository.findByUsername(username);
-        return !user.getPersonalCard().getDone();
+        return !personalCardJpaRepository.findByUserId(user.getId()).getDone();
     }
 }

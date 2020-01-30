@@ -1,5 +1,6 @@
 package com.sini.doneit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 
@@ -7,21 +8,23 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "personal_card", uniqueConstraints = @UniqueConstraint(columnNames = {"users"}))
+
 public class PersonalCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String university;
     private String faculty;
+    private String university = "";
     private String telephone;
     private String statusDescription;
     private Boolean done = false;
     @Type(type = "text")
     private String base64StringImage;
 
-    @OneToOne
+    @OneToOne(optional = false)
     @JoinColumn(name = "users")
+    @MapsId
     private User user;
 
 
@@ -107,7 +110,8 @@ public class PersonalCard {
                 ", telephone='" + telephone + '\'' +
                 ", statusDescription='" + statusDescription + '\'' +
                 ", done=" + done +
-                ", user=" + user +
-                ", base64String=" + base64StringImage + "}";
+                ", base64String=" + base64StringImage +
+                "user: " + user +
+                "}";
     }
 }

@@ -4,6 +4,8 @@ package com.sini.doneit.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+
 public class User {
 
     @Id
@@ -29,16 +32,25 @@ public class User {
     private String email;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Todo> todoList;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Proposal> proposals;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
     private PersonalCard personalCard;
+
+
+    @OneToMany(mappedBy = "to", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Followers> followers;
+
+    @OneToMany(mappedBy = "from", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Followers> following;
 
 
     public User() {
@@ -65,9 +77,33 @@ public class User {
         todo.setUser(this);
     }
 
+    public List<Followers> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List<Followers> followers) {
+        this.followers = followers;
+    }
+
+    public List<Followers> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<Followers> following) {
+        this.following = following;
+    }
+
     public void removeTodo(Todo todo) {
         todoList.remove(todo);
         todo.setUser(null);
+    }
+
+    public void addFollower(Followers follower) {
+        this.following.add(follower);
+    }
+
+    public void addFollowing(Followers follower) {
+        this.followers.add(follower);
     }
 
     public Long getId() {
@@ -89,8 +125,12 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 
@@ -102,7 +142,7 @@ public class User {
         this.todoList = todoList;
     }
 
-    public boolean isOwnerOfTodo(Todo t){
+    public boolean isOwnerOfTodo(Todo t) {
         return todoList.contains(t);
     }
 
