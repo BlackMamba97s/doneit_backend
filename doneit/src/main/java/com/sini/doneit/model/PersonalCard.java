@@ -27,6 +27,10 @@ public class PersonalCard {
     @MapsId
     private User user;
 
+    @OneToOne(cascade = CascadeType.ALL,optional = false)
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
+
 
     public PersonalCard() {
     }
@@ -102,16 +106,27 @@ public class PersonalCard {
         return this;
     }
 
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
     @Override
     public String toString() {
         return "PersonalCard{" +
-                "university='" + university + '\'' +
+                "id=" + id +
                 ", faculty='" + faculty + '\'' +
+                ", university='" + university + '\'' +
                 ", telephone='" + telephone + '\'' +
                 ", statusDescription='" + statusDescription + '\'' +
                 ", done=" + done +
-                ", base64String=" + base64StringImage +
-                "user: " + user +
-                "}";
+                ", base64StringImage='" + base64StringImage + '\'' +
+                ", user=" + user +
+                '}';
     }
 }

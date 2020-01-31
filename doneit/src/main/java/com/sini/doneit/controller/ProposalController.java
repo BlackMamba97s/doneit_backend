@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.sini.doneit.model.MessageCode.TODO_CREATED;
+import static com.sini.doneit.model.MessageCode.*;
 
 @RestController
 @CrossOrigin("*")
@@ -44,14 +44,20 @@ public class ProposalController {
     @PostMapping(path = "create-proposal")
     public ResponseEntity<ResponseMessage> createProposal(@RequestBody Todo todo, @RequestHeader HttpHeaders headers) {
         String username = jwtTokenUtil.getUsernameFromHeader(headers);
+        if(username.equals(todo.getUser().getUsername())){
+            return new ResponseEntity<>(new ResponseMessage("proposta non accettata, errore con gli utenti", TODO_CREATED),
+                    HttpStatus.BAD_REQUEST);
+        }
+
         User user = userJpaRepository.findByUsername(username);
 
-        Proposal proposal = new Proposal(user, todo);
 
-        proposalJpaRepository.save(proposal);
+            Proposal proposal = new Proposal(user, todo);
+            proposalJpaRepository.save(proposal);
 
-        return new ResponseEntity<>(new ResponseMessage("Proposta aggiunta correttamente", TODO_CREATED),
-                HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseMessage("Proposta aggiunta correttamente", PROPOSAL_CREATED),
+                    HttpStatus.OK);
+
     }
 
     @PostMapping(path = "accept-proposal/{proposalId}")
@@ -74,6 +80,24 @@ public class ProposalController {
                 HttpStatus.OK);
     }
 
+
+    @PutMapping(path = "undo-accept-proposal/todo/{todoId}")
+    public ResponseEntity<ResponseMessage> undoAcceptProposal(@PathVariable Long todoId){
+        Todo todo = todoJpaRepository.findById(todoId).get();
+        todo.setState("published");
+
+        for (Proposal propos : todo.getProposals()) {
+            Proposal newProp = proposalJpaRepository.findById(propos.getId()).get();
+            newProp.setState("in progress");
+            proposalJpaRepository.save(newProp);
+        }
+
+        todoJpaRepository.save(todo);
+
+        return new ResponseEntity<>(new ResponseMessage("annullata accettazione del todo", TODO_CREATED),
+                HttpStatus.OK);
+    }
+
     @PutMapping(path = "refuse-proposal/{proposalId}")
     public ResponseEntity<ResponseMessage> refuseProposal(@PathVariable Long proposalId) {
         Proposal proposal = proposalJpaRepository.findById(proposalId).get();
@@ -81,6 +105,16 @@ public class ProposalController {
         proposalJpaRepository.save(proposal);
 
         return new ResponseEntity<>(new ResponseMessage("proposta rifiutata", TODO_CREATED),
+                HttpStatus.OK);
+    }
+
+    @PutMapping(path = "undo-refuse-proposal/{proposalId}")
+    public ResponseEntity<ResponseMessage> undoRefuseProposal(@PathVariable Long proposalId){
+        Proposal proposal = proposalJpaRepository.findById(proposalId).get();
+        proposal.setState("in progress");
+        proposalJpaRepository.save(proposal);
+
+        return new ResponseEntity<>(new ResponseMessage("rifuto annullato correttamente", TODO_CREATED),
                 HttpStatus.OK);
     }
 

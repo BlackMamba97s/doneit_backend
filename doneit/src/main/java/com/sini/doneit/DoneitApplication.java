@@ -4,6 +4,7 @@ import com.sini.doneit.controller.RegisterController;
 import com.sini.doneit.model.Category;
 import com.sini.doneit.model.PersonalCard;
 import com.sini.doneit.model.User;
+import com.sini.doneit.model.Wallet;
 import com.sini.doneit.repository.CategoryJpaRepository;
 import com.sini.doneit.repository.UserJpaRepository;
 import com.sini.doneit.services.RegisterValidator;
@@ -61,6 +62,7 @@ public class DoneitApplication {
             PersonalCard personalCard = new PersonalCard();
             personalCard.setBase64StringImage(RegisterController.defaultImageBase64);
             personalCard.setUser(u1);
+            personalCard.setWallet(new Wallet());
             u1.setPersonalCard(personalCard);
             userJpaRepository.save(u1);
         }

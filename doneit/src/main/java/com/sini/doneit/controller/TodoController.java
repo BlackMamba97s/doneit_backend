@@ -5,6 +5,7 @@ import com.sini.doneit.jwt.JwtTokenUtil;
 import com.sini.doneit.model.ResponseMessage;
 import com.sini.doneit.model.Todo;
 import com.sini.doneit.model.User;
+import com.sini.doneit.model.Wallet;
 import com.sini.doneit.repository.TodoJpaRepository;
 import com.sini.doneit.repository.UserJpaRepository;
 
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.sini.doneit.repository.WalletJpaRepository;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +40,8 @@ public class TodoController {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
+    @Autowired
+    private WalletJpaRepository walletJpaRepository;
 
     @GetMapping("/my-todo-list")
     public List<Todo> getUserTodoList(@RequestHeader HttpHeaders headers) {
@@ -72,8 +76,9 @@ public class TodoController {
     }
 
     @GetMapping(path = "/active-todo-list")
-    public List<Todo> getActiveTodo() {
-        List<Todo> todoList = todoJpaRepository.findAllActiveTodo(new Date());
+    public List<Todo> getActiveTodo(@RequestHeader HttpHeaders headers) {
+        String username = jwtTokenUtil.getUsernameFromHeader(headers);
+        List<Todo> todoList = todoJpaRepository.findAllActiveTodo(username,new Date());
         return todoList;
     }
 
@@ -81,12 +86,18 @@ public class TodoController {
     public ResponseEntity<ResponseMessage> createTodo(@RequestBody Todo todo, @RequestHeader HttpHeaders headers) {
         String username = jwtTokenUtil.getUsernameFromHeader(headers);
         User user = userJpaRepository.findByUsername(username);
-        todo.setUser(user);
-        todoJpaRepository.save(todo);
+        Wallet userWallet = user.getPersonalCard().getWallet();
+        if(userWallet.removeCfu(todo.getCategory().getCfuPrice())){
+            walletJpaRepository.save(userWallet);
+            todo.setUser(user);
+            todoJpaRepository.save(todo);
 
-        return new ResponseEntity<>(new ResponseMessage("Todo creato correttamente", TODO_CREATED),
+            return new ResponseEntity<>(new ResponseMessage("Todo creato correttamente", TODO_CREATED),
+                    HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new ResponseMessage("Cfu insufficienti", CFU_INSUFFICIENT),
                 HttpStatus.OK);
-
     }
 
 
