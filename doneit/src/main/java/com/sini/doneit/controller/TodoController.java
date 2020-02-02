@@ -83,6 +83,7 @@ public class TodoController {
     }
 
     @PostMapping("/create-todo")
+    @Transactional
     public ResponseEntity<ResponseMessage> createTodo(@RequestBody Todo todo, @RequestHeader HttpHeaders headers) {
         String username = jwtTokenUtil.getUsernameFromHeader(headers);
         User user = userJpaRepository.findByUsername(username);
@@ -97,7 +98,7 @@ public class TodoController {
         }
 
         return new ResponseEntity<>(new ResponseMessage("Cfu insufficienti", CFU_INSUFFICIENT),
-                HttpStatus.OK);
+                HttpStatus.BAD_REQUEST);
     }
 
 

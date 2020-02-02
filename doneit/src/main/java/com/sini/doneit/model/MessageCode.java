@@ -19,4 +19,5 @@ public class MessageCode {
     public static final int FOLLOWING_REQUEST_FAILED = 13;
     public static final int PROPOSAL_CREATED = 14;
     public static final int CFU_INSUFFICIENT = 15;
+    public static final int EVENT_CREATED = 16;
 }

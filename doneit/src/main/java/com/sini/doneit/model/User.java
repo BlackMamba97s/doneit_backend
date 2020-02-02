@@ -37,6 +37,10 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Event> eventList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Proposal> proposals;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
@@ -51,6 +55,9 @@ public class User {
     @OneToMany(mappedBy = "from", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Followers> following;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<EventPartecipation> eventPartecipations;
 
 
     public User() {
