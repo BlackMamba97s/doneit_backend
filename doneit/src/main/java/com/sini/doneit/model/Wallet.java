@@ -9,13 +9,13 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer cfu = 15;
+    private Integer cfu = 180;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "wallet",fetch = FetchType.LAZY,optional = false)
+    @OneToOne(mappedBy = "wallet", fetch = FetchType.LAZY, optional = false)
     private PersonalCard personalCard;
 
-    public Wallet(){
+    public Wallet() {
 
     }
 
@@ -27,16 +27,16 @@ public class Wallet {
         this.id = id;
     }
 
-    public boolean removeCfu(Integer value){
-        if(this.cfu >= value){
+    public boolean removeCfu(Integer value) {
+        if (this.cfu >= value) {
             this.cfu -= value;
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public void addCfu(Integer value){
+    public void addCfu(Integer value) {
         this.cfu += value;
     }
 

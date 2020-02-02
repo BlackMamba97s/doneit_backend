@@ -27,7 +27,7 @@ public class PersonalCard {
     @MapsId
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL,optional = false)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
@@ -112,8 +112,9 @@ public class PersonalCard {
     }
 
 
-    public void setWallet(Wallet wallet) {
+    public PersonalCard setWallet(Wallet wallet) {
         this.wallet = wallet;
+        return this;
     }
 
     @Override

@@ -86,9 +86,31 @@ public class UserController {
     }
 
     @GetMapping("/user/{username}/get-image-profile")
-    public String getUserImageProfile(@PathVariable String username){
+    public String getUserImageProfile(@PathVariable String username) {
         User user = userJpaRepository.findByUsername(username);
         return personalCardJpaRepository.findByUserId(user.getId()).getBase64StringImage();
+    }
+
+
+    @GetMapping("/user/get-user-started-with/{string}")
+    public List<String> getUserStartedWithString(@PathVariable String string) {
+        if (string.length() < 2) {
+            return null;
+        }
+        List<String> users = userJpaRepository.getUserStartedWithString(string);
+        return users;
+    }
+
+    //ritorna tutti gli utenti e le rispettive personalCards
+    @GetMapping("/user/get-all-users")
+    public List<PersonalCard> getAllUsers() {
+        return personalCardJpaRepository.findAll();
+    }
+
+    @PostMapping("/user/get-users-images")
+    public List<String> getUsersImages(@RequestBody List<Long> users) {
+        System.out.println(users);
+        return personalCardJpaRepository.getUsersImage(users);
     }
 
 

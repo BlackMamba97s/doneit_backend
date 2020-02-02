@@ -83,6 +83,7 @@ public class TodoController {
     }
 
     @PostMapping("/create-todo")
+    @Transactional
     public ResponseEntity<ResponseMessage> createTodo(@RequestBody Todo todo, @RequestHeader HttpHeaders headers) {
         String username = jwtTokenUtil.getUsernameFromHeader(headers);
         User user = userJpaRepository.findByUsername(username);

@@ -19,4 +19,7 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
 
     User findByEmail(String email);
+
+    @Query("select u.username from User u where u.username like :string%")
+    List<String> getUserStartedWithString(@Param("string")String string);
 }

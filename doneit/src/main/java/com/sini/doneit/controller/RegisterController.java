@@ -4,6 +4,7 @@ import com.sini.doneit.jwt.JwtTokenUtil;
 import com.sini.doneit.model.PersonalCard;
 import com.sini.doneit.model.ResponseMessage;
 import com.sini.doneit.model.User;
+import com.sini.doneit.model.Wallet;
 import com.sini.doneit.repository.PersonalCardJpaRepository;
 import com.sini.doneit.repository.UserJpaRepository;
 import com.sini.doneit.services.RegisterValidator;
@@ -45,7 +46,9 @@ public class RegisterController {
                 return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
             }
             encryptPassword(user);
-            user.setPersonalCard(new PersonalCard().setUser(user).setBase64StringImage(defaultImageBase64));
+            user.setPersonalCard(new PersonalCard().setUser(user).setBase64StringImage(defaultImageBase64).setWallet(
+                    new Wallet()
+            ));
             userJpaRepository.save(user);
             responseMessage = new ResponseMessage("Utente creato con successo", SUCCESSFUL_REGISTER);
             return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -66,19 +69,27 @@ public class RegisterController {
     public ResponseEntity<ResponseMessage> completeRegister(@RequestHeader HttpHeaders httpHeaders,
                                                             @RequestBody PersonalCard personalCard) {
         User user = userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(httpHeaders));
+        ResponseMessage responseMessage;
         if (user != null) {
 
             PersonalCard p = personalCardJpaRepository.findByUserId(user.getId());
-            p.setDone(true)
-                    .setUniversity(personalCard.getUniversity())
+            p.setUniversity(personalCard.getUniversity())
                     .setFaculty(personalCard.getFaculty())
                     .setBase64StringImage(personalCard.getBase64StringImage())
                     .setStatusDescription(personalCard.getStatusDescription())
                     .setTelephone(personalCard.getTelephone());
-
+            if (checkIfComplete(personalCard)) {
+                p.setDone(true);
+                responseMessage = new ResponseMessage("Registrazione completata",
+                        SUCCESSFUL_REGISTER);
+            }
+            else{
+                responseMessage = new ResponseMessage("Registrazione incompelta",
+                        INCOMPLETE_REGISTER);
+            }
             personalCardJpaRepository.save(p);
-            return new ResponseEntity<>(new ResponseMessage("Registrazione completata",
-                    SUCCESSFUL_REGISTER), HttpStatus.OK);
+
+            return new ResponseEntity<>(responseMessage, HttpStatus.OK);
         }
         return new ResponseEntity<>(new ResponseMessage("Errore nella registrazione",
                 INVALID_DATA), HttpStatus.BAD_REQUEST);
@@ -88,6 +99,11 @@ public class RegisterController {
     private boolean userAlreadyExists(User user) {
         return userJpaRepository.findByUsername(user.getUsername()) != null ||
                 userJpaRepository.findByEmail(user.getEmail()) != null;
+    }
+
+    private boolean checkIfComplete(PersonalCard personalCard) {
+        return personalCard.getUniversity() != null && personalCard.getFaculty() != null &&
+                !personalCard.getBase64StringImage().equals(defaultImageBase64);
     }
 
 
