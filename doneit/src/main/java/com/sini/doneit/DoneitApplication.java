@@ -47,6 +47,9 @@ public class DoneitApplication {
                 insertUser("Giuseppe", "Ignone", "seppu_97", "Password1234!", "giuse@gmail.com");
                 insertUser("Daniele", "Camilleri", "black_mamba97", "Password1234!", "@dani@gmail.com");
                 insertUser("Giovanna", "Petrone", "gio_spike", "Password1234!", "spike@gmail.com");
+                insertUser("Matteo", "Baldoni", "matteo_baldoni", "Password1234!", "spike1@gmail.com");
+                insertUser("Giancarlo", "Ruffo", "gruffo_99", "Password1234!", "spike2@gmail.com");
+                insertUser("Francesco", "Bergadando", "fra_berga", "Password1234!", "spike3@gmail.com");
             }
         }
 
