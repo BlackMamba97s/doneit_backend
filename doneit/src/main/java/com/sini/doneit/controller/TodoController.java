@@ -98,7 +98,7 @@ public class TodoController {
         }
 
         return new ResponseEntity<>(new ResponseMessage("Cfu insufficienti", CFU_INSUFFICIENT),
-                HttpStatus.OK);
+                HttpStatus.BAD_REQUEST);
     }
 
 
