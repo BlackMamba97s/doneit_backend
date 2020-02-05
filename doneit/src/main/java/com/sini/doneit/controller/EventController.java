@@ -45,4 +45,10 @@ public class EventController {
 
         return eventList;
     }
+
+    @GetMapping(path = "event-list/users/{username}")
+    public List<Event> getEventListByUsername(@PathVariable String username){
+        User user = this.userJpaRepository.findByUsername((username));
+        return this.eventJpaRepository.findByUser(user);
+    }
 }

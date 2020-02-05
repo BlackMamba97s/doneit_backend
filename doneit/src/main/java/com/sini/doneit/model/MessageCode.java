@@ -20,4 +20,5 @@ public class MessageCode {
     public static final int PROPOSAL_CREATED = 14;
     public static final int CFU_INSUFFICIENT = 15;
     public static final int INCOMPLETE_REGISTER = 16;
+    public static final int EVENT_CREATED = 17;
 }

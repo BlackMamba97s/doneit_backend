@@ -15,6 +15,7 @@ public class Event {
     private String description;
     private Date date;
     private String place;
+    private String placeId;
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private List<EventPartecipation> eventPartecipations;
@@ -77,5 +78,13 @@ public class Event {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 }

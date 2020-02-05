@@ -9,7 +9,7 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer cfu = 180;
+    private Integer cfu = 15;
 
     @JsonIgnore
     @OneToOne(mappedBy = "wallet", fetch = FetchType.LAZY, optional = false)

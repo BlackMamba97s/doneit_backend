@@ -11,4 +11,6 @@ import java.util.List;
 public interface EventJpaRepository extends JpaRepository<Event,Long> {
     @Query("select e from Event e ")
     List<Event> findEventList();
+
+    List<Event> findByUser(User user);
 }

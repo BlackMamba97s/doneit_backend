@@ -57,6 +57,12 @@ public class TodoController {
         return this.todoJpaRepository.findByUserAndState(user, state);
     }
 
+    @GetMapping("todo-list/users/{username}/state/{state}")
+    public List<Todo> getUserTodoListByState(@PathVariable String username, @PathVariable String state){
+        User user = userJpaRepository.findByUsername(username);
+        return this.todoJpaRepository.findByUserAndState(user,state);
+    }
+
     @GetMapping("/get-todo/{todoId}")
     public Todo getTodoById(@RequestHeader HttpHeaders headers, @PathVariable Long todoId) {
         User user = userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(headers));
