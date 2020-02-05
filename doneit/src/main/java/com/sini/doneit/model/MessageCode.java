@@ -21,4 +21,6 @@ public class MessageCode {
     public static final int CFU_INSUFFICIENT = 15;
     public static final int INCOMPLETE_REGISTER = 16;
     public static final int EVENT_CREATED = 17;
+    public static final int CHAT_MESSAGE_SENT = 19;
+    public static final int CHAT_MESSAGE_NOT_SENT = 20;
 }

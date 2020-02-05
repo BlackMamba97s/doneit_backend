@@ -59,6 +59,14 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<EventPartecipation> eventPartecipations;
 
+    @OneToMany(mappedBy = "to", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<MessageChat> messageReceived;
+
+    @OneToMany(mappedBy = "from", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<MessageChat> messageSent;
+
 
     public User() {
     }
