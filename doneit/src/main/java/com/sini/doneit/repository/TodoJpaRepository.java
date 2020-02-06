@@ -11,8 +11,8 @@ import java.util.List;
 
 public interface TodoJpaRepository extends JpaRepository<Todo, Long> {
 
-    @Query("select t from Todo t where (t.expirationDate >= :currentDate or t.expirationDate is null) and t.state like 'published' and t.user.username not like :username ")
-    List<Todo> findAllActiveTodo(@Param("username") String username, @Param("currentDate") Date currentDate);
+    @Query("select t from Todo t where (t.expirationDate >= :currentDate or t.expirationDate is null) and t.state like 'published'")
+    List<Todo> findAllActiveTodo(@Param("currentDate") Date currentDate);
 
     List<Todo> findByUserAndState(User user, String state);
 

@@ -76,6 +76,11 @@ public class TodoController {
         return null;
     }
 
+    @GetMapping("/get-generic-todo/{todoId}")
+    public Todo getTodoById(@PathVariable Long todoId){
+        return this.todoJpaRepository.findById(todoId).get();
+    }
+
     @GetMapping(path = "/all-todo-list")
     public List<Todo> getAllTodo() {
         return todoJpaRepository.findAll();
@@ -83,8 +88,7 @@ public class TodoController {
 
     @GetMapping(path = "/active-todo-list")
     public List<Todo> getActiveTodo(@RequestHeader HttpHeaders headers) {
-        String username = jwtTokenUtil.getUsernameFromHeader(headers);
-        List<Todo> todoList = todoJpaRepository.findAllActiveTodo(username,new Date());
+        List<Todo> todoList = todoJpaRepository.findAllActiveTodo(new Date());
         return todoList;
     }
 
