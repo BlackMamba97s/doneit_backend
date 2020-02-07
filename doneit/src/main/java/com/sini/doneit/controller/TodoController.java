@@ -6,6 +6,7 @@ import com.sini.doneit.model.ResponseMessage;
 import com.sini.doneit.model.Todo;
 import com.sini.doneit.model.User;
 import com.sini.doneit.model.Wallet;
+import com.sini.doneit.repository.ProposalJpaRepository;
 import com.sini.doneit.repository.TodoJpaRepository;
 import com.sini.doneit.repository.UserJpaRepository;
 
@@ -43,6 +44,9 @@ public class TodoController {
     @Autowired
     private WalletJpaRepository walletJpaRepository;
 
+    @Autowired
+    private ProposalJpaRepository proposalJpaRepository;
+
     @GetMapping("/my-todo-list")
     public List<Todo> getUserTodoList(@RequestHeader HttpHeaders headers) {
         String username = jwtTokenUtil.getUsernameFromToken((jwtTokenUtil.getTokenFromHeader(headers)));
@@ -58,9 +62,9 @@ public class TodoController {
     }
 
     @GetMapping("todo-list/users/{username}/state/{state}")
-    public List<Todo> getUserTodoListByState(@PathVariable String username, @PathVariable String state){
+    public List<Todo> getUserTodoListByState(@PathVariable String username, @PathVariable String state) {
         User user = userJpaRepository.findByUsername(username);
-        return this.todoJpaRepository.findByUserAndState(user,state);
+        return this.todoJpaRepository.findByUserAndState(user, state);
     }
 
     @GetMapping("/get-todo/{todoId}")
@@ -82,7 +86,7 @@ public class TodoController {
     }
 
     @GetMapping("/get-generic-todo/{todoId}")
-    public Todo getTodoById(@PathVariable Long todoId){
+    public Todo getTodoById(@PathVariable Long todoId) {
         return this.todoJpaRepository.findById(todoId).get();
     }
 
@@ -103,7 +107,7 @@ public class TodoController {
         String username = jwtTokenUtil.getUsernameFromHeader(headers);
         User user = userJpaRepository.findByUsername(username);
         Wallet userWallet = user.getPersonalCard().getWallet();
-        if(userWallet.removeCfu(todo.getCategory().getCfuPrice())){
+        if (userWallet.removeCfu(todo.getCategory().getCfuPrice())) {
             walletJpaRepository.save(userWallet);
             todo.setUser(user);
             todoJpaRepository.save(todo);
@@ -150,6 +154,13 @@ public class TodoController {
 
         return new ResponseEntity<>(new ResponseMessage("Errore nella modifica del todo", FAILED_TODO_MODIFY),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("todo/get-joined-todo")
+    public List<Todo> getJoinedTodo(@RequestHeader HttpHeaders httpHeaders) {
+        User user = userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(httpHeaders));
+        List<Todo> todoList = proposalJpaRepository.getJoinedTodo(user);
+        return todoList;
     }
 
 }
