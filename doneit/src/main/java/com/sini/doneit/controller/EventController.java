@@ -53,6 +53,12 @@ public class EventController {
         return eventList;
     }
 
+    @GetMapping(path = "event-list/users/{username}")
+    public List<Event> getEventsByUsername(@PathVariable String username){
+        User user = this.userJpaRepository.findByUsername(username);
+        return this.eventJpaRepository.findByUser(user);
+    }
+
     @GetMapping(path = "/event/my-events")
     public List<Event> getMyEvents(@RequestHeader HttpHeaders httpHeaders) {
         User user = this.userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(httpHeaders));

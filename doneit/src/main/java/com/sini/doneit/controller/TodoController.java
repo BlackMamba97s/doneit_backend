@@ -76,6 +76,11 @@ public class TodoController {
         return null;
     }
 
+    @GetMapping("profile-todo-list/users/{username}")
+    public List<Todo> getProfileTodoList(@PathVariable String username){
+        return this.todoJpaRepository.findProfileTodoList(username);
+    }
+
     @GetMapping("/get-generic-todo/{todoId}")
     public Todo getTodoById(@PathVariable Long todoId){
         return this.todoJpaRepository.findById(todoId).get();

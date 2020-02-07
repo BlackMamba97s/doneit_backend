@@ -15,6 +15,8 @@ public interface TodoJpaRepository extends JpaRepository<Todo, Long> {
     List<Todo> findAllActiveTodo(@Param("currentDate") Date currentDate);
 
     List<Todo> findByUserAndState(User user, String state);
+    @Query("select t from Todo t where t.user.username like :username and (t.state like 'published' or t.state like 'completed') order by t.id desc")
+    List<Todo> findProfileTodoList(@Param("username") String username);
 
 
 }
