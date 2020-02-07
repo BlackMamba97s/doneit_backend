@@ -57,6 +57,7 @@ public class User {
     private List<Followers> following;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<EventPartecipation> eventPartecipations;
 
     @OneToMany(mappedBy = "to", fetch = FetchType.LAZY)

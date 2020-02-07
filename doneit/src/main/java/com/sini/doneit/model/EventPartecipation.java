@@ -14,9 +14,10 @@ public class EventPartecipation {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "event_id")
+    @JsonIgnore
     private Event event;
 
-    @JsonIgnore
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;

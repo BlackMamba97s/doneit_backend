@@ -8,9 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface EventJpaRepository extends JpaRepository<Event,Long> {
-    @Query("select e from Event e ")
+public interface EventJpaRepository extends JpaRepository<Event, Long> {
+    @Query("select e from Event e order by e.id desc ")
     List<Event> findEventList();
-
     List<Event> findByUser(User user);
 }

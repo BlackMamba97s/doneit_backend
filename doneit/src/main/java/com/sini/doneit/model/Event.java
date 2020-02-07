@@ -17,7 +17,7 @@ public class Event {
     private String place;
     private String placeId;
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
     private List<EventPartecipation> eventPartecipations;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -87,4 +87,15 @@ public class Event {
     public void setPlaceId(String placeId) {
         this.placeId = placeId;
     }
+
+//    @Override
+//    public String toString() {
+//        return "Event{" +
+//                "id=" + id +
+//                ", title='" + title + '\'' +
+//                ", description='" + description + '\'' +
+//                ", date=" + date +
+//                ", place='" + place + '\'' +
+//                ", placeId='" + placeId + '\'';
+//    }
 }
