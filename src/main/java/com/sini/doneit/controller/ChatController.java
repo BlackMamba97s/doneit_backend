@@ -44,8 +44,8 @@ public class ChatController {
 
     @MessageMapping("/send")
     public void send(Principal principal, SocketChatMessage socketChatMessage) throws Exception {
-
-        if (socketChatMessage.getUserTo().equals("") || socketChatMessage.getUserTo() == null) {
+        System.out.println("ricevuto messaggio! Devo inviarlo a " + socketChatMessage.getUserTo());
+        if (socketChatMessage.getContent().equals("") || socketChatMessage.getUserTo() == null) {
             return;
         }
         socketChatMessage.setUserFrom(principal.getName());

@@ -32,4 +32,13 @@ public class SocketChatMessage {
     public void setUserFrom(String userFrom) {
         this.userFrom = userFrom;
     }
+
+    @Override
+    public String toString() {
+        return "SocketChatMessage{" +
+                "userTo='" + userTo + '\'' +
+                ", userFrom='" + userFrom + '\'' +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }
