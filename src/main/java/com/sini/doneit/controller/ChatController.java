@@ -50,9 +50,9 @@ public class ChatController {
             return;
         }
         socketChatMessage.setUserFrom(principal.getName());
+        saveMessage(socketChatMessage);
         messagingTemplate.convertAndSendToUser(socketChatMessage.getUserTo(), "/queue/reply", socketChatMessage);
     }
-
 
     @GetMapping("/chat/get-conversation/{user}")
     public List<MessageChat> getMessageFromUser(@PathVariable String user,
@@ -63,6 +63,18 @@ public class ChatController {
                 chatMessageJpaRepository.getConversationByUser(from.getId(), to.getId());
         System.out.println(conversation);
         return conversation;
+    }
+
+    private void saveMessage(SocketChatMessage socketChatMessage) {
+        User from = userJpaRepository.findByUsername(socketChatMessage.getUserFrom());
+        User to = userJpaRepository.findByUsername(socketChatMessage.getUserTo());
+
+        MessageChat messageChat = new MessageChat();
+        messageChat.setDate(new Date());
+        messageChat.setTo(to);
+        messageChat.setFrom(from);
+        messageChat.setContent(socketChatMessage.getContent());
+        chatMessageJpaRepository.save(messageChat);
     }
 }
 
