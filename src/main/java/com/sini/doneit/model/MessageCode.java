@@ -23,4 +23,6 @@ public class MessageCode {
     public static final int EVENT_CREATED = 17;
     public static final int CHAT_MESSAGE_SENT = 19;
     public static final int CHAT_MESSAGE_NOT_SENT = 20;
+    public static final int BAD_KEY = 21;
+    public static final int CONVALIDATION_DONE = 22;
 }

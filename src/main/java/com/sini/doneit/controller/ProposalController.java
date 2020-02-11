@@ -1,10 +1,8 @@
 package com.sini.doneit.controller;
 
 import com.sini.doneit.jwt.JwtTokenUtil;
-import com.sini.doneit.model.Proposal;
-import com.sini.doneit.model.ResponseMessage;
-import com.sini.doneit.model.Todo;
-import com.sini.doneit.model.User;
+import com.sini.doneit.model.*;
+import com.sini.doneit.repository.ConvalidationJpaRepository;
 import com.sini.doneit.repository.ProposalJpaRepository;
 import com.sini.doneit.repository.TodoJpaRepository;
 import com.sini.doneit.repository.UserJpaRepository;
@@ -15,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.sini.doneit.model.MessageCode.*;
 
@@ -30,6 +29,9 @@ public class ProposalController {
 
     @Autowired
     private TodoJpaRepository todoJpaRepository;
+
+    @Autowired
+    private ConvalidationJpaRepository convalidationJpaRepository;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -118,6 +120,37 @@ public class ProposalController {
                 HttpStatus.OK);
     }
 
+    @GetMapping(path = "get-convalidation-key/{todoId}")
+    public String getConvalidationKey(@PathVariable Long todoId, @RequestHeader HttpHeaders headers){
+        String proponent = this.jwtTokenUtil.getUsernameFromHeader(headers);
+        String key = UUID.randomUUID().toString();
+        Convalidation convalidation = new Convalidation(proponent,key,todoId);
+        this.convalidationJpaRepository.save(convalidation);
+
+        return key;
+    }
+
+    @PostMapping(path = "convalidate-todo")
+    public ResponseEntity<ResponseMessage> convalidateTodo(@RequestBody Convalidation c){
+        Convalidation convalidation = this.convalidationJpaRepository.findByTodo(c.todo);
+        System.out.println(convalidation);
+
+        if(convalidation != null && convalidation.key.equals(c.key)){
+            Todo todo = this.todoJpaRepository.findById(convalidation.todo).get();
+            User user = this.userJpaRepository.findByUsername(convalidation.proponent);
+            user.getPersonalCard().getWallet().addCfu(todo.getCategory().getCfuPrice());
+            todo.setState("completed");
+            Proposal proposal = this.proposalJpaRepository.findByUserAndTodo(user.getId(),todo.getId());
+            proposal.setState("completed");
+            this.todoJpaRepository.save(todo);
+            this.userJpaRepository.save(user);
+            this.proposalJpaRepository.save(proposal);
+
+            return new ResponseEntity<>(new ResponseMessage("convalidazione avvenuta con successo",CONVALIDATION_DONE),HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new ResponseMessage("Chiave incongruente",BAD_KEY),HttpStatus.BAD_REQUEST);
+        }
+    }
 
     // for android application
     @GetMapping(path = "create-proposal-android/{todoId}")

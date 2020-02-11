@@ -146,7 +146,7 @@ public class TodoController {
                 user.removeTodo(todo);
                 user.addTodo(todo);
                 todoJpaRepository.save(todo);
-
+    
                 return new ResponseEntity<>(new ResponseMessage("Todo modificato con successo", SUCCESS_TODO_MODIFIED),
                         HttpStatus.OK);
             }
