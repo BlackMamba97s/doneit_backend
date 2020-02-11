@@ -163,4 +163,15 @@ public class TodoController {
         return todoList;
     }
 
+
+    // for android application
+
+    @GetMapping("todo/get-joined-todo-accepted")
+    public List<Todo> getJoinedTodoAccepted(@RequestHeader HttpHeaders httpHeaders) {
+        User user = userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(httpHeaders));
+        List<Todo> todoList = proposalJpaRepository.getJoinedAcceptedTodo(user);
+        return todoList;
+    }
+
+
 }

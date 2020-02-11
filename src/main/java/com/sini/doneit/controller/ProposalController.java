@@ -119,4 +119,24 @@ public class ProposalController {
     }
 
 
+    // for android application
+    @GetMapping(path = "create-proposal-android/{todoId}")
+    public ResponseEntity<ResponseMessage> createProposal (@PathVariable Long todoId, @RequestHeader HttpHeaders headers){
+        String username = jwtTokenUtil.getUsernameFromHeader(headers);
+        Todo todo = this.todoJpaRepository.findById(todoId).get();
+        if(username.equals(todo.getUser().getUsername())){
+            return new ResponseEntity<>(new ResponseMessage("proposta non accettata, errore con gli utenti", TODO_CREATED),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        User user = userJpaRepository.findByUsername(username);
+
+
+        Proposal proposal = new Proposal(user, todo);
+        proposalJpaRepository.save(proposal);
+
+        return new ResponseEntity<>(new ResponseMessage("Proposta aggiunta correttamente", PROPOSAL_CREATED),
+                HttpStatus.OK);
+    }
+
 }

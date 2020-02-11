@@ -15,4 +15,6 @@ public interface ProposalJpaRepository extends JpaRepository<Proposal,Long>{
     @Query("select p.todo from Proposal p where p.user = :user and p.state = 'in progress'")
     List<Todo> getJoinedTodo(@Param("user") User user);
 
+    @Query("select p.todo from Proposal p where p.user = :user and p.state = 'accepted'")
+    List<Todo> getJoinedAcceptedTodo(@Param("user") User user);
 }

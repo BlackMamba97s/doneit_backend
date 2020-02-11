@@ -103,4 +103,24 @@ public class EventController {
         List<Event> joinedEvents = this.eventPartecipationJpaRepository.getMyJoinedEvent(user);
         return joinedEvents;
     }
+
+    // for android application
+
+    @GetMapping("/event/join-event-android/{eventId}")
+    public ResponseEntity<ResponseMessage> joinEventAndroid(@PathVariable Long eventId, @RequestHeader HttpHeaders headers) {
+        User user = this.userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(headers));
+        Optional<Event> currentEvent = eventJpaRepository.findById(eventId);
+        if(currentEvent!=null){
+            Event e = currentEvent.get();
+            if (!e.getUser().getUsername().equals(user.getUsername()) && currentEvent.isPresent()) {
+                e = currentEvent.get();
+                EventPartecipation partecipation = new EventPartecipation();
+                partecipation.setUser(user);
+                partecipation.setEvent(e);
+                eventPartecipationJpaRepository.save(partecipation);
+                return new ResponseEntity<>(new ResponseMessage("Proposta all'evento con successo", EVENT_CREATED), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(new ResponseMessage("Proposta non andata a buon fine", TODO_CREATED), HttpStatus.BAD_REQUEST);
+    }
 }
