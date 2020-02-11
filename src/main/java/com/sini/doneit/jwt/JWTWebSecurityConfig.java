@@ -84,14 +84,16 @@ public class JWTWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         HttpMethod.POST,
                         authenticationPath,
-                        "/register-user"
+                        "/register-user",
+                        "/convalidate-todo"
                 )
                 .antMatchers(HttpMethod.OPTIONS, "/**")
                 .and()
                 .ignoring()
                 .antMatchers(
                         HttpMethod.GET,
-                        "/gs-guide-websocket/**" //Other Stuff You want to Ignore
+                        "/gs-guide-websocket/**",
+                        "/get-convalidation-key/**"//Other Stuff You want to Ignore
                 )
                 .and()
                 .ignoring()
