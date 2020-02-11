@@ -19,4 +19,7 @@ public interface ProposalJpaRepository extends JpaRepository<Proposal,Long>{
     List<Todo> getJoinedAcceptedTodo(@Param("user") User user);
 
     Proposal findByUserAndTodo(Long user, Long todo);
+
+    @Query("select p from Proposal p where p.user = :user and p.todo = :todo" )
+    Proposal findByUserAndTodo(@Param("user") User user, @Param("todo") Long todo);
 }

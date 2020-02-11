@@ -25,4 +25,5 @@ public class MessageCode {
     public static final int CHAT_MESSAGE_NOT_SENT = 20;
     public static final int BAD_KEY = 21;
     public static final int CONVALIDATION_DONE = 22;
+    public static final int CONVALIDATION_TIMER_EXCEDED = 23;
 }

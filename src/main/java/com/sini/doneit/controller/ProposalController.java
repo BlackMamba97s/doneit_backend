@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -123,33 +124,43 @@ public class ProposalController {
     @GetMapping(path = "get-convalidation-key/{todoId}")
     public String getConvalidationKey(@PathVariable Long todoId, @RequestHeader HttpHeaders headers){
         String proponent = this.jwtTokenUtil.getUsernameFromHeader(headers);
-        String key = UUID.randomUUID().toString();
-        Convalidation convalidation = new Convalidation(proponent,key,todoId);
-        this.convalidationJpaRepository.save(convalidation);
-
-        return key;
+        User user = this.userJpaRepository.findByUsername(proponent);
+        Proposal p = this.proposalJpaRepository.findByUserAndTodo(user,todoId);
+        if(p != null){
+            String key = UUID.randomUUID().toString();
+            Convalidation convalidation = new Convalidation(proponent,key,todoId);
+            this.convalidationJpaRepository.save(convalidation);
+            return key;
+        }
+        return null;
     }
 
     @PostMapping(path = "convalidate-todo")
-    public ResponseEntity<ResponseMessage> convalidateTodo(@RequestBody Convalidation c){
-        Convalidation convalidation = this.convalidationJpaRepository.findByTodo(c.todo);
-        System.out.println(convalidation);
+    public ResponseEntity<ResponseMessage> convalidateTodo(@RequestBody Convalidation c, @RequestHeader HttpHeaders headers){
+        Convalidation convalidation = this.convalidationJpaRepository.findByTodo(c.getTodo());
+        Long difference = (new Date().getTime() - convalidation.getDate().getTime())/1000;
+        if(difference <= 30) {
+            if (convalidation != null && convalidation.getKey().equals(c.getKey())) {
+                Todo todo = this.todoJpaRepository.findById(convalidation.getTodo()).get();
 
-        if(convalidation != null && convalidation.key.equals(c.key)){
-            Todo todo = this.todoJpaRepository.findById(convalidation.todo).get();
-            User user = this.userJpaRepository.findByUsername(convalidation.proponent);
-            user.getPersonalCard().getWallet().addCfu(todo.getCategory().getCfuPrice());
-            todo.setState("completed");
-            Proposal proposal = this.proposalJpaRepository.findByUserAndTodo(user.getId(),todo.getId());
-            proposal.setState("completed");
-            this.todoJpaRepository.save(todo);
-            this.userJpaRepository.save(user);
-            this.proposalJpaRepository.save(proposal);
+                User user = this.userJpaRepository.findByUsername(convalidation.getProponent());
+                user.getPersonalCard().getWallet().addCfu(todo.getCategory().getCfuPrice());
+                todo.setState("completed");
+                Proposal proposal = this.proposalJpaRepository.findByUserAndTodo(user.getId(), todo.getId());
+                proposal.setState("completed");
+                this.todoJpaRepository.save(todo);
+                this.userJpaRepository.save(user);
+                this.proposalJpaRepository.save(proposal);
 
-            return new ResponseEntity<>(new ResponseMessage("convalidazione avvenuta con successo",CONVALIDATION_DONE),HttpStatus.OK);
+                return new ResponseEntity<>(new ResponseMessage("convalidazione avvenuta con successo", CONVALIDATION_DONE), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ResponseMessage("Chiave incongruente", BAD_KEY), HttpStatus.BAD_REQUEST);
+            }
+
         }else{
-            return new ResponseEntity<>(new ResponseMessage("Chiave incongruente",BAD_KEY),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseMessage("timer di convalidazione scaduto",CONVALIDATION_TIMER_EXCEDED),HttpStatus.OK);
         }
+
     }
 
     // for android application
