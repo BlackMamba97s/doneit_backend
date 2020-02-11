@@ -20,7 +20,7 @@ public class Convalidation {
     public Convalidation() {
     }
 
-    public Convalidation(String proponent, String key, Long todo){
+    public Convalidation(String proponent, String key, Long todo) {
         this.proponent = proponent;
         this.key = key;
         this.todo = todo;
@@ -64,6 +64,14 @@ public class Convalidation {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public boolean isNotExpired() {
+        System.out.println("Calcolo data");
+        Long difference = (new Date().getTime() - this.getDate().getTime()) / 1000;
+        boolean b =  difference <= 15;
+        System.out.println(b);
+        return b;
     }
 
     @Override
