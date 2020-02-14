@@ -47,6 +47,11 @@ public class UserController {
 
     }
 
+    @GetMapping(path = "/my-user-data")
+    public User getUser(@RequestHeader HttpHeaders headers){
+        String username = this.jwtTokenUtil.getUsernameFromHeader(headers);
+        return this.userJpaRepository.findByUsername(username);
+    }
     @PostMapping("/user/follow-user")
     public ResponseEntity<ResponseMessage> followUser(@RequestHeader HttpHeaders httpHeaders, @RequestBody String username) {
         User userFrom = userJpaRepository.findByUsername(jwtTokenUtil.getUsernameFromHeader(httpHeaders));
