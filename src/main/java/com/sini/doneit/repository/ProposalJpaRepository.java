@@ -23,6 +23,6 @@ public interface ProposalJpaRepository extends JpaRepository<Proposal, Long> {
 
 
 
-    @Query("select p from Proposal p where p.user = :user and p.todo.id = :todo")
-    Proposal findByUserAndTodo(@Param("user") User user, @Param("todo") Long todo);
+    @Query("select p from Proposal p where p.user = :user and p.todo = :todo")
+    Proposal findByUserAndTodo(@Param("user") User user, @Param("todo") Todo todo);
 }

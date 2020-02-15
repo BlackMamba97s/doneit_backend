@@ -152,7 +152,7 @@ public class ProposalController {
                 User user = this.userJpaRepository.findByUsername(convalidation.getProponent());
 //                user.getPersonalCard().getWallet().addCfu(todo.getCategory().getCfuPrice());
 //                todo.setState("completed");
-                Proposal proposal = this.proposalJpaRepository.findByUserAndTodo(user.getId(), todo.getId());
+                Proposal proposal = this.proposalJpaRepository.findByUserAndTodo(user, todo);
                 proposal.setState("completed");
                 this.todoJpaRepository.save(todo);
 //                this.userJpaRepository.save(user);
