@@ -150,12 +150,11 @@ public class ProposalController {
             Todo todo = todoJpaRepository.findById(convalidation.getTodo()).get();
             todo.setState("completed");
                 User user = this.userJpaRepository.findByUsername(convalidation.getProponent());
-//                user.getPersonalCard().getWallet().addCfu(todo.getCategory().getCfuPrice());
-//                todo.setState("completed");
+                user.getPersonalCard().getWallet().addCfu(todo.getCategory().getCfuPrice());
                 Proposal proposal = this.proposalJpaRepository.findByUserAndTodo(user, todo);
                 proposal.setState("completed");
                 this.todoJpaRepository.save(todo);
-//                this.userJpaRepository.save(user);
+                this.userJpaRepository.save(user);
                 this.proposalJpaRepository.save(proposal);
             System.out.println("Convalidazione ok!");
             return new ResponseEntity<>(new ResponseMessage("convalidazione avvenuta con successo", CONVALIDATION_DONE), HttpStatus.OK);
